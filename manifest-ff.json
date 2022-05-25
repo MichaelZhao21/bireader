@@ -1,0 +1,30 @@
+{
+    "manifest_version": 2,
+    "name": "BiReader",
+    "version": "1.0",
+
+    "description": "Based off of the principles of Bionic Reader to improve speed and depth of reading web text!",
+
+    "icons": {
+        "48": "icons/48.png",
+        "96": "icons/96.png"
+    },
+
+    "permissions": ["tabs", "storage"],
+
+    "browser_action": {
+        "default_icon": "icons/32.png",
+        "default_title": "Turn BiReader On"
+    },
+
+    "background": {
+        "scripts": ["browser-polyfill.js", "background.js"]
+    },
+
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["reader.js"]
+        }
+    ]
+}
