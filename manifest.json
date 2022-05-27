@@ -10,8 +10,6 @@
         "96": "icons/96.png"
     },
 
-    "permissions": ["activeTab"],
-
     "action": {
         "default_icon": "icons/32.png",
         "default_title": "Turn BiReader On"
