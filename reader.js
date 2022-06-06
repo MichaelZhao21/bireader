@@ -18,7 +18,7 @@ function boldifyText() {
             } else {
                 const newNode = document.createElement('span');
                 newNode.innerHTML = child.textContent
-                    .replace(/([A-Za-z]+)\b/g, function (x) {
+                    .replace(/([A-Za-zÀ-ú]+)\b/g, function (x) {
                         const l = Math.ceil(x.length / 2);
                         return `<b>${x.substring(0, l)}</b>${x.substring(l)}`;
                     })
