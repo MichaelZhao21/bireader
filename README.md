@@ -18,7 +18,7 @@ To promote open source development, I have included the [WTFPL License](http://w
 
 To test on Chrome, follow [these instructions (step 2)](https://support.google.com/chrome/a/answer/2714278?hl=en). To test on Firefox, run the `firefox.sh` script and follow [these instructions](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Your_first_WebExtension#installing). Make sure to select a file from the newly created `firefox` directory.
 
-To build for the extension store, run the `build.sh` script for Chrome. For Firefox, simply run the `firefox.sh` script and then zip the firefox folder.
+To build for the extension store, run the `build.sh` script for Chrome. For Firefox, run the `build-ff.sh` script. Make sure to run both scripts from the root directory.
 
 ## Future Plans
 
