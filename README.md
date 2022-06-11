@@ -1,6 +1,6 @@
 ![Icon](icons/96.png)
 
-# BiReader
+# BiReader **·** [Firefox Addon](https://addons.mozilla.org/en-US/firefox/addon/bireader/) **·** [Chrome Extension](https://chrome.google.com/webstore/detail/bireader/mkndieaclikppobgjihfijainfmjcbhd)
 
 This is a WebExtension (Firefox AND Chrome) based off of the principles of Bionic Reader to improve speed and depth of reading web text! Unfortunately, the B\*onic Reader company are very strict with their tRaDeMaRk :unamused: so I have made my own version which is NOT the same concept and is instead an innovation of the idea.
 
