@@ -24,7 +24,7 @@ function boldifyText() {
                         const l = Math.ceil(x.length / 2);
                         return `<b>${x.substring(0, l)}</b>${x.substring(l)}`;
                     })
-                    .replace(/(\d+)/g, '<b>$1</b>');
+                    .replace(/(\d+|[!-\/:-@\[-`\{-~]+)/g, '<b>$1</b>');
                 nodes[i].removeChild(child);
                 nodes[i].appendChild(newNode);
             }
