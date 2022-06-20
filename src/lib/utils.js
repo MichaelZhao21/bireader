@@ -1,0 +1,1 @@
+export const isFirefox = process.env.IS_FIREFOX === "true";

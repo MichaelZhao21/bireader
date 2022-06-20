@@ -1,15 +1,8 @@
-function toggleBold(data) {
-    console.log(data);
-    if (!data.activate) {
-        window.location.reload();
-    } else {
-        boldifyText();
-    }
-}
-
-function boldifyText() {
+// Boldify the given dom node according to the parameters provided.
+export function boldify(node, fixation = 0.5, saccade = 0) {
     // Process all nodes that are not "bold" tagged elements
-    const nodes = document.body.querySelectorAll(':not(b)');
+    const nodes = node.querySelectorAll(':not(b)');
+    let counter = 0;
     for (let i = 0; i < nodes.length; i++) {
         const children = nodes[i].childNodes.length;
         for (let j = 0; j < children; j++) {
@@ -21,7 +14,8 @@ function boldifyText() {
                 newNode.classList.add('bi-bold');
                 newNode.innerHTML = child.textContent
                     .replace(/([A-Za-zÀ-ú]+)\b/g, function (x) {
-                        const l = Math.ceil(x.length / 2);
+                        if((counter++) % (saccade + 1) !== 0) return x;
+                        const l = Math.ceil(x.length * fixation);
                         return `<b>${x.substring(0, l)}</b>${x.substring(l)}`;
                     })
                     .replace(/(\d+|[\!-\.:;=?@\[-`{-~])/g, '<b>$1</b>');
@@ -31,14 +25,4 @@ function boldifyText() {
             }
         }
     }
-
-    // Inject bold css
-    const path = chrome.extension.getURL('style.css');
-    const link = document.createElement('link');
-    link.href = path;
-    link.type = 'text/css';
-    link.rel = 'stylesheet';
-    document.getElementsByTagName('head')[0].appendChild(link);
 }
-
-chrome.runtime.onMessage.addListener(toggleBold);
