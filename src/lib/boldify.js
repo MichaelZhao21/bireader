@@ -1,5 +1,5 @@
 // Boldify the given dom node according to the parameters provided.
-export function boldify(node, fixation = 0.5, saccade = 0) {
+export function boldify(node, { fixation, saccade, opacity }) {
     // Process all nodes that are not "bold" tagged elements
     const nodes = node.querySelectorAll(':not(b)');
     let counter = 0;

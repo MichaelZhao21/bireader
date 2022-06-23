@@ -1,2 +1,3 @@
 extension/*.js linguist-generated
 extension/*.json linguist-generated
+extension/assets/water.min.css linguist-vendored

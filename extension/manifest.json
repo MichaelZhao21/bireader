@@ -27,6 +27,15 @@
         }
     ],
     "web_accessible_resources": [
-        "assets/style.css"
+        "assets/water.css",
+        "icons/32.png"
+    ],
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "bireader@michaelzhao21.github.io"
+        }
+    },
+    "permissions": [
+        "storage"
     ]
 }

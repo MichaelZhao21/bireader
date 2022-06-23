@@ -1,5 +1,10 @@
 import fs from "fs/promises";
 
+const webAccessibleResources = [
+    "assets/water.css",
+    "icons/32.png"
+];
+
 const manifest = (isFirefox) => ({
     "manifest_version": isFirefox ? 2 : 3,
     "name": "BiReader",
@@ -28,12 +33,24 @@ const manifest = (isFirefox) => ({
         }
     ],
 
-    "web_accessible_resources": [
-        isFirefox ? "assets/style.css" : {
+    "web_accessible_resources": isFirefox ? webAccessibleResources : [
+        {
             "matches": ["<all_urls>"],
-            "resources": ["assets/style.css"],
+            "resources": webAccessibleResources,
             "use_dynamic_url": true
         }
+    ],
+
+    "browser_specific_settings": {
+        "gecko": {
+            // Must remain constant for sync storage to transfer between versions
+            id: "bireader@michaelzhao21.github.io"
+        }
+    },
+
+    "permissions": [
+        // Sync storage
+        "storage"
     ]
 });
 
