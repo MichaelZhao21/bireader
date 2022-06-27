@@ -2,7 +2,7 @@
     'use strict';
 
     (function() {
-        const env = {"IS_FIREFOX":"true"};
+        const env = {"IS_FIREFOX":"true","NODE_ENV":"development"};
         try {
             if (process) {
                 process.env = Object.assign({}, process.env);

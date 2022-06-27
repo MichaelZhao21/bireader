@@ -2,7 +2,7 @@
     'use strict';
 
     (function() {
-        const env = {"IS_FIREFOX":"true"};
+        const env = {"IS_FIREFOX":"true","NODE_ENV":"development"};
         try {
             if (process) {
                 process.env = Object.assign({}, process.env);
@@ -2172,16 +2172,31 @@
 
     let cachedStorage = undefined;
 
+    // https://stackoverflow.com/a/59787784
+    const isEmpty = obj => {
+        for(const i in obj) {
+            return false;
+        }
+        return true;
+    };
+
     const setStorage = async val => (await chrome.storage.sync.set(val), cachedStorage = val);
 
     const patchStorage = async patch => await setStorage({ ...(await getStorage()), ...patch });
 
-    const getStorage = async () => cachedStorage ?? (await chrome.storage.sync.get() ?? await setStorage({
-        fixation: 0.5,
-        saccade: 0,
-        opacity: 1,
-        fontWeight: 700
-    }));
+    const getStorage = async () => {
+        if(cachedStorage) return cachedStorage;
+        const storage = chrome.storage.sync.get();
+        if(!storage || isEmpty(storage)) {
+            return await setStorage({
+                fixation: 0.5,
+                saccade: 0,
+                opacity: 1,
+                fontWeight: 700
+            });
+        }
+        return cachedStorage = storage;
+    };
 
     function plainTag (t) {
       for (var s = t[0], i = 1, l = arguments.length; i < l; i++)
@@ -2239,7 +2254,6 @@
     async function updateBolding() {
         deboldify(document.body);
         boldify(document.body, await getStorage());
-        console.log(await getStorage());
         document.getElementById("bi-style").innerText = getGlobalStyles(await getStorage());
     }
 
