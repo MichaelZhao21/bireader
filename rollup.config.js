@@ -6,7 +6,8 @@ const plugins = [
     nodeResolve(),
     commonjs(),
     injectProcessEnv({
-        IS_FIREFOX: process.env.IS_FIREFOX
+        IS_FIREFOX: process.env.IS_FIREFOX,
+        NODE_ENV: process.env.NODE_ENV
     })
 ];
 

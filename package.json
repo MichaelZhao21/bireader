@@ -7,11 +7,11 @@
     "compile": "rollup -c",
     "build:ff": "yarn manifest firefox && IS_FIREFOX=true yarn compile",
     "build:chromium": "yarn manifest chromium && yarn compile",
-    "dev:ff": "concurrently \"yarn build:ff --watch\" \"web-ext run -t firefox-desktop -s extension\"",
-    "dev:chromium": "concurrently \"yarn build:chromium --watch\" \"web-ext run -t chromium -s extension\"",
+    "dev:ff": "NODE_ENV=development concurrently \"yarn build:ff --watch\" \"web-ext run -t firefox-desktop -s extension\"",
+    "dev:chromium": "NODE_ENV=development concurrently \"yarn build:chromium --watch\" \"web-ext run -t chromium -s extension\"",
     "package": "web-ext build -s extension --overwrite-dest",
-    "package:ff": "yarn build:ff && yarn package",
-    "package:chromium": "yarn build:chromium && yarn package"
+    "package:ff": "NODE_ENV=production yarn build:ff && yarn package",
+    "package:chromium": "NODE_ENV=production yarn build:chromium && yarn package"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^22.0.0",

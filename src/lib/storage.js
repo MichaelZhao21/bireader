@@ -7,5 +7,6 @@ export const patchStorage = async patch => await setStorage({ ...(await getStora
 export const getStorage = async () => cachedStorage ?? (await chrome.storage.sync.get() ?? await setStorage({
     fixation: 0.5,
     saccade: 0,
-    opacity: 1
+    opacity: 1,
+    fontWeight: 700
 }));

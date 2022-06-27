@@ -1,6 +1,8 @@
 import { render, html } from "uhtml/async";
 import {getStorage, patchStorage, setStorage} from "./storage";
 import plainTag from "plain-tag";
+import {boldify, deboldify} from "./boldify";
+import {getGlobalStyles} from "../contentScript/reader";
 
 const setStyles = (element, properties) => Object.entries(properties).forEach(kv => element.style.setProperty(...kv, "important"));
 
@@ -18,6 +20,7 @@ const sliderTickMark = (min, max, val, sliderId, disp = (val) => val) => {
                 border-width: 0 1px;
                 color: var(--text-muted);
                 position: relative;
+                margin-bottom: -4px;
             }
             /* min label */
             #${id} > :nth-child(1) {
@@ -30,7 +33,9 @@ const sliderTickMark = (min, max, val, sliderId, disp = (val) => val) => {
             /* current value label */
             #${id} > :nth-child(2) {
                 position: absolute;
-                left: ${(val - min) / (max - min) * 100}%;
+                left: calc(10px + (${(val - min) / (max - min)} * (100% - 20px)));
+                transform: translateX(-50%);
+                background-color: var(--background-body);
             }
             
             #${id} > :nth-child(1), :nth-child(3) {
@@ -39,23 +44,30 @@ const sliderTickMark = (min, max, val, sliderId, disp = (val) => val) => {
             }`}
         </style>
         <div id=${id}>
-            <span>${disp(min)}</span>
+            <span>${val === min ? "" : disp(min)}</span>
             <span>${disp(val)}</span>
-            <span>${disp(max)}</span>
+            <span>${val === max ? "" : disp(max)}</span>
         </div>
     `;
 };
 
+async function updateBolding() {
+    deboldify(document.body);
+    boldify(document.body, await getStorage());
+    console.log(await getStorage());
+    document.getElementById("bi-style").innerText = getGlobalStyles(await getStorage());
+}
+
 // Add a UI to control the extension settings.
 // It will be isolated from the rest of the page it's injected into with shadow DOM.
-export default async function ui(globalStyleElement) {
+export default async function ui() {
     const container = document.createElement("div");
     setStyles(container, {
         all: "initial",
         position: "fixed",
         bottom: "20px",
         right: "20px",
-        zIndex: "999999"
+        zIndex: "2147483647"
     });
     container.attachShadow({ mode: "open" });
 
@@ -90,7 +102,15 @@ export default async function ui(globalStyleElement) {
             step: 0.1,
             name: "opacity",
             label: "Opacity",
-            help: "Opacity of the bolded text"
+            help: "Opacity of the bolded text (useful if font weight doesn't work)"
+        },
+        {
+            min: 100,
+            max: 1000,
+            step: 100,
+            name: "fontWeight",
+            label: "Font weight",
+            help: "Thickness of the bolded text; may not work properly with non-variable-weight fonts"
         }
     ]
 
@@ -103,7 +123,7 @@ export default async function ui(globalStyleElement) {
                 <style>
                     #bi-main {
                         background-color: var(--background-body);
-                        border: 1px solid var(--background-alt);
+                        border: 2px solid var(--background-alt);
                         padding: 0.5rem;
                         border-radius: 0.5rem;
                         display: flex;
@@ -111,11 +131,18 @@ export default async function ui(globalStyleElement) {
                         gap: 0.5rem;
                         width: 250px;
                         max-width: calc(100vh - 4rem);
+                        max-height: calc(100vh - 20px - 1rem - 20px);
                     }
                     h2 {
                         margin: 0;
                     }
                     
+                    #bi-ranges {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 0.5rem;
+                        overflow: auto;
+                    }
                     .bi-range {
                         display: flex;
                         flex-direction: column;
@@ -125,6 +152,9 @@ export default async function ui(globalStyleElement) {
                     .bi-range > span {
                         color: var(--text-muted);
                         font-size: 0.8rem;
+                    }
+                    .bi-range > label {
+                        font-size: 0.9rem;
                     }
                     input[type=range] {
                         margin: 0;
@@ -150,22 +180,20 @@ export default async function ui(globalStyleElement) {
                 </style>
                 <div id="bi-main">
                     <h2>BiReader</h2>
-                    ${rangeData.map(({ min, max, step, name, label, help }, i) => html.for(rangeData[i])`
-                        <style>
-                            ${css`input[type=range]::-moz-range-thumb:before {
-                                content: "${storage[name]}";
-                            }`}
-                        </style>
-                        <div class="bi-range">
-                            <label for=${"bi-" + name}>${label}</label>
-                            ${sliderTickMark(min, max, storage[name], name)}
-                            <input type="range" min=${min} max=${max} step=${step} name=${"bi-" + name} value=${storage[name]} onchange=${async e => {
-                            await patchStorage({ [name]: e.target.value });
-                            await update(state);
-                        }} />
-                            <span>${help}</span>
-                        </div>
-                    `)}
+                    <div id="bi-ranges">
+                        ${rangeData.map(({ min, max, step, name, label, help }, i) => html.for(rangeData[i])`
+                            <div class="bi-range">
+                                <label for=${"bi-" + name}>${label}</label>
+                                ${sliderTickMark(min, max, storage[name], name)}
+                                <input type="range" min=${min} max=${max} step=${step} name=${"bi-" + name} value=${storage[name]} onchange=${async e => {
+                                await patchStorage({ [name]: Number(e.target.value) });
+                                await update(state);
+                                await updateBolding();
+                            }} />
+                                <span>${help}</span>
+                            </div>
+                        `)}
+                    </div>
                     <div class="bi-actions">
                         <button onclick=${() => {
                             // Remove controls from the page

@@ -12,7 +12,7 @@ function toggleBold(data) {
     }
 }
 
-export const getGlobalStyles = (fontWeight, opacity) => `
+export const getGlobalStyles = ({ fontWeight, opacity }) => `
 .bi-bold b {
     font-weight: ${fontWeight} !important;
     opacity: ${opacity === 1 ? "inherit" : opacity} !important;
@@ -23,19 +23,12 @@ async function boldifyText() {
     const storage = await getStorage();
     boldify(document.body, storage);
 
-    // Inject bold css
-    // const path = chrome.runtime.getURL('assets/style.css');
-    // const link = document.createElement('link');
-    // link.href = path;
-    // link.type = 'text/css';
-    // link.rel = 'stylesheet';
-    // document.getElementsByTagName('head')[0].appendChild(link);
-
     const s = document.createElement("style");
-    s.innerText = getGlobalStyles(700, storage.opacity);
+    s.id = "bi-style";
+    s.innerText = getGlobalStyles(storage);
     document.head.appendChild(s);
 
-    await ui(s);
+    await ui();
 }
 
 polyfill(() => {

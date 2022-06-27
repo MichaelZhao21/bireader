@@ -14,7 +14,7 @@
     })();
 
     // Boldify the given dom node according to the parameters provided.
-    function boldify(node, { fixation, saccade, opacity }) {
+    function boldify(node, { fixation, saccade }) {
         // Process all nodes that are not "bold" tagged elements
         const nodes = node.querySelectorAll(':not(b)');
         let counter = 0;
@@ -41,7 +41,14 @@
         ));
     }
 
+    // Undo the boldify operation on the given dom node.
+    const deboldify = node => [...node.getElementsByClassName("bi-bold")]
+        // setting an element's innerText to itself clears all tags wrapping any parts of its contents
+        // (which achieves our goal of removing the b tags while keeping the text inside)
+        .forEach(e => e.innerText = e.innerText);
+
     const isFirefox = process.env.IS_FIREFOX === "true";
+    process.env.NODE_ENV === "development";
 
     var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -2172,7 +2179,8 @@
     const getStorage = async () => cachedStorage ?? (await chrome.storage.sync.get() ?? await setStorage({
         fixation: 0.5,
         saccade: 0,
-        opacity: 1
+        opacity: 1,
+        fontWeight: 700
     }));
 
     function plainTag (t) {
@@ -2197,6 +2205,7 @@
                 border-width: 0 1px;
                 color: var(--text-muted);
                 position: relative;
+                margin-bottom: -4px;
             }
             /* min label */
             #${id} > :nth-child(1) {
@@ -2209,7 +2218,9 @@
             /* current value label */
             #${id} > :nth-child(2) {
                 position: absolute;
-                left: ${(val - min) / (max - min) * 100}%;
+                left: calc(10px + (${(val - min) / (max - min)} * (100% - 20px)));
+                transform: translateX(-50%);
+                background-color: var(--background-body);
             }
             
             #${id} > :nth-child(1), :nth-child(3) {
@@ -2218,23 +2229,30 @@
             }`}
         </style>
         <div id=${id}>
-            <span>${disp(min)}</span>
+            <span>${val === min ? "" : disp(min)}</span>
             <span>${disp(val)}</span>
-            <span>${disp(max)}</span>
+            <span>${val === max ? "" : disp(max)}</span>
         </div>
     `;
     };
 
+    async function updateBolding() {
+        deboldify(document.body);
+        boldify(document.body, await getStorage());
+        console.log(await getStorage());
+        document.getElementById("bi-style").innerText = getGlobalStyles(await getStorage());
+    }
+
     // Add a UI to control the extension settings.
     // It will be isolated from the rest of the page it's injected into with shadow DOM.
-    async function ui(globalStyleElement) {
+    async function ui() {
         const container = document.createElement("div");
         setStyles(container, {
             all: "initial",
             position: "fixed",
             bottom: "20px",
             right: "20px",
-            zIndex: "999999"
+            zIndex: "2147483647"
         });
         container.attachShadow({ mode: "open" });
 
@@ -2269,7 +2287,15 @@
                 step: 0.1,
                 name: "opacity",
                 label: "Opacity",
-                help: "Opacity of the bolded text"
+                help: "Opacity of the bolded text (useful if font weight doesn't work)"
+            },
+            {
+                min: 100,
+                max: 1000,
+                step: 100,
+                name: "fontWeight",
+                label: "Font weight",
+                help: "Thickness of the bolded text; may not work properly with non-variable-weight fonts"
             }
         ];
 
@@ -2282,7 +2308,7 @@
                 <style>
                     #bi-main {
                         background-color: var(--background-body);
-                        border: 1px solid var(--background-alt);
+                        border: 2px solid var(--background-alt);
                         padding: 0.5rem;
                         border-radius: 0.5rem;
                         display: flex;
@@ -2290,11 +2316,18 @@
                         gap: 0.5rem;
                         width: 250px;
                         max-width: calc(100vh - 4rem);
+                        max-height: calc(100vh - 20px - 1rem - 20px);
                     }
                     h2 {
                         margin: 0;
                     }
                     
+                    #bi-ranges {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 0.5rem;
+                        overflow: auto;
+                    }
                     .bi-range {
                         display: flex;
                         flex-direction: column;
@@ -2304,6 +2337,9 @@
                     .bi-range > span {
                         color: var(--text-muted);
                         font-size: 0.8rem;
+                    }
+                    .bi-range > label {
+                        font-size: 0.9rem;
                     }
                     input[type=range] {
                         margin: 0;
@@ -2329,22 +2365,20 @@
                 </style>
                 <div id="bi-main">
                     <h2>BiReader</h2>
-                    ${rangeData.map(({ min, max, step, name, label, help }, i) => html.for(rangeData[i])`
-                        <style>
-                            ${css`input[type=range]::-moz-range-thumb:before {
-                                content: "${storage[name]}";
-                            }`}
-                        </style>
-                        <div class="bi-range">
-                            <label for=${"bi-" + name}>${label}</label>
-                            ${sliderTickMark(min, max, storage[name], name)}
-                            <input type="range" min=${min} max=${max} step=${step} name=${"bi-" + name} value=${storage[name]} onchange=${async e => {
-                            await patchStorage({ [name]: e.target.value });
-                            await update(state);
-                        }} />
-                            <span>${help}</span>
-                        </div>
-                    `)}
+                    <div id="bi-ranges">
+                        ${rangeData.map(({ min, max, step, name, label, help }, i) => html.for(rangeData[i])`
+                            <div class="bi-range">
+                                <label for=${"bi-" + name}>${label}</label>
+                                ${sliderTickMark(min, max, storage[name], name)}
+                                <input type="range" min=${min} max=${max} step=${step} name=${"bi-" + name} value=${storage[name]} onchange=${async e => {
+                                await patchStorage({ [name]: Number(e.target.value) });
+                                await update(state);
+                                await updateBolding();
+                            }} />
+                                <span>${help}</span>
+                            </div>
+                        `)}
+                    </div>
                     <div class="bi-actions">
                         <button onclick=${() => {
                             // Remove controls from the page
@@ -2390,7 +2424,7 @@
         }
     }
 
-    const getGlobalStyles = (fontWeight, opacity) => `
+    const getGlobalStyles = ({ fontWeight, opacity }) => `
 .bi-bold b {
     font-weight: ${fontWeight} !important;
     opacity: ${opacity === 1 ? "inherit" : opacity} !important;
@@ -2401,16 +2435,9 @@
         const storage = await getStorage();
         boldify(document.body, storage);
 
-        // Inject bold css
-        // const path = chrome.runtime.getURL('assets/style.css');
-        // const link = document.createElement('link');
-        // link.href = path;
-        // link.type = 'text/css';
-        // link.rel = 'stylesheet';
-        // document.getElementsByTagName('head')[0].appendChild(link);
-
         const s = document.createElement("style");
-        s.innerText = getGlobalStyles(700, storage.opacity);
+        s.id = "bi-style";
+        s.innerText = getGlobalStyles(storage);
         document.head.appendChild(s);
 
         await ui();
