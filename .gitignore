@@ -1,3 +1,4 @@
-firefox
-chrome
-dist.zip
+web-ext-artifacts
+.idea
+yarn-error.log
+node_modules

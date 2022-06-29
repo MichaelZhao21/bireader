@@ -1,3 +1,5 @@
+import polyfill from "../lib/polyfill";
+
 async function handleClick(tab) {
     const ON = 'Turn BiReader On';
     const OFF = 'Turn BiReader Off';
@@ -14,4 +16,6 @@ async function handleClick(tab) {
     });
 }
 
-chrome.action.onClicked.addListener(handleClick);
+polyfill(() => {
+    chrome.action.onClicked.addListener(handleClick);
+});

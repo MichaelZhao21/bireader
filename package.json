@@ -1,0 +1,30 @@
+{
+  "name": "bireader",
+  "version": "1.0.0",
+  "repository": "https://github.com/MichaelZhao21/bireader.git",
+  "scripts": {
+    "manifest": "esno scripts/generateManifest.js",
+    "compile": "rollup -c",
+    "build:ff": "yarn manifest firefox && IS_FIREFOX=true yarn compile",
+    "build:chromium": "yarn manifest chromium && yarn compile",
+    "dev:ff": "NODE_ENV=development concurrently \"yarn build:ff --watch\" \"web-ext run -t firefox-desktop -s extension\"",
+    "dev:chromium": "NODE_ENV=development concurrently \"yarn build:chromium --watch\" \"web-ext run -t chromium -s extension\"",
+    "package": "web-ext build -s extension --overwrite-dest",
+    "package:ff": "NODE_ENV=production yarn build:ff && yarn package",
+    "package:chromium": "NODE_ENV=production yarn build:chromium && yarn package"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^22.0.0",
+    "@rollup/plugin-node-resolve": "^13.3.0",
+    "concurrently": "^7.2.2",
+    "esno": "^0.16.3",
+    "rollup": "^2.75.6",
+    "web-ext": "^7.0.0"
+  },
+  "dependencies": {
+    "plain-tag": "^0.1.3",
+    "rollup-plugin-inject-process-env": "^1.3.1",
+    "uhtml": "^3.0.1",
+    "webextension-polyfill": "^0.9.0"
+  }
+}
