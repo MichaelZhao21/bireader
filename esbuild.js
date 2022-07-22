@@ -1,8 +1,11 @@
-const fs = require('fs');
+const esbuild = require('esbuild');
+const fs = require('fs-extra');
+const fetch = require('node-fetch');
 
-const webAccessibleResources = ['assets/water.css', 'icons/32.png'];
+const WEB_ACCESSIBLE_RESOURCES = ['assets/water.css', 'icons/32.png'];
 
-const manifest = (isFirefox) => ({
+// Manifest generation
+const generateManifest = (isFirefox) => ({
     manifest_version: isFirefox ? 2 : 3,
     name: 'BiReader',
     version: '1.1',
@@ -32,11 +35,11 @@ const manifest = (isFirefox) => ({
     ],
 
     web_accessible_resources: isFirefox
-        ? webAccessibleResources
+        ? WEB_ACCESSIBLE_RESOURCES
         : [
               {
                   matches: ['<all_urls>'],
-                  resources: webAccessibleResources,
+                  resources: WEB_ACCESSIBLE_RESOURCES,
                   use_dynamic_url: true,
               },
           ],
@@ -50,11 +53,29 @@ const manifest = (isFirefox) => ({
     permissions: ['storage'],
 });
 
-(function () {
-    // Write the manifest based on the command line argument ("firefox" or "chromium")
-    const isFirefox = process.argv[2] === 'firefox';
-    const manifestPath = 'extension/manifest.json';
-    const manifestContent = JSON.stringify(manifest(isFirefox), null, 4);
-    fs.writeFileSync(manifestPath, manifestContent);
-    console.log(`Wrote manifest to ${manifestPath}`);
-})();
+// Run all build scripts
+fs.removeSync('extension');
+fs.mkdirSync('extension');
+
+fs.writeFileSync(
+    'extension/manifest.json',
+    JSON.stringify(generateManifest(process.env.IS_FIREFOX), null, 4)
+);
+
+esbuild.buildSync({
+    entryPoints: ['src/background.js'],
+    bundle: true,
+    outfile: 'extension/background.js',
+});
+
+esbuild.buildSync({
+    entryPoints: ['src/reader.js'],
+    bundle: true,
+    outfile: 'extension/reader.js',
+});
+
+fs.copySync('icons', 'extension/icons');
+
+fetch('https://cdn.jsdelivr.net/npm/water.css@2/out/water.min.css')
+    .then((data) => data.text())
+    .then((text) => fs.writeFileSync('extension/water.min.css', text));

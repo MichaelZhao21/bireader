@@ -1,4 +1,4 @@
-import polyfill from "../lib/polyfill";
+import polyfill from './lib/polyfill';
 
 async function handleClick(tab) {
     const ON = 'Turn BiReader On';
