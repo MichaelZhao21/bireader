@@ -62,16 +62,18 @@ fs.writeFileSync(
     JSON.stringify(generateManifest(process.env.IS_FIREFOX), null, 4)
 );
 
+const define = { 'process.env.IS_FIREFOX': process.env.IS_FIREFOX ? 'true' : 'false' };
 esbuild.buildSync({
     entryPoints: ['src/background.js'],
     bundle: true,
     outfile: 'extension/background.js',
+    define,
 });
-
 esbuild.buildSync({
     entryPoints: ['src/reader.js'],
     bundle: true,
     outfile: 'extension/reader.js',
+    define,
 });
 
 fs.copySync('icons', 'extension/icons');
