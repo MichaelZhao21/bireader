@@ -1,7 +1,7 @@
 // Boldify the given dom node according to the parameters provided.
-export function boldify(node, { fixation, saccade }) {
+export function boldify({ fixation, saccade }) {
     // Process all nodes that are not "bold" tagged elements
-    const nodes = node.querySelectorAll(':not(b)');
+    const nodes = document.body.querySelectorAll(':not(b)');
     let counter = 0;
     nodes.forEach((node) =>
         Array.from({ length: node.childNodes.length }, () => {
@@ -27,8 +27,8 @@ export function boldify(node, { fixation, saccade }) {
 }
 
 // Undo the boldify operation on the given dom node.
-export const deboldify = (node) =>
-    [...node.getElementsByClassName('bi-bold')]
+export const deboldify = () =>
+    [...document.body.getElementsByClassName('bi-bold')]
         // setting an element's innerText to itself clears all tags wrapping any parts of its contents
         // (which achieves our goal of removing the b tags while keeping the text inside)
         .forEach((e) => (e.innerText = e.innerText));

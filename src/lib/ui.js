@@ -56,8 +56,8 @@ const sliderTickMark = (min, max, val, sliderId, disp = (val) => val) => {
 };
 
 async function updateBolding() {
-    deboldify(document.body);
-    boldify(document.body, await getStorage());
+    deboldify();
+    boldify(await getStorage());
     document.getElementById('bi-style').innerText = getGlobalStyles(await getStorage());
 }
 

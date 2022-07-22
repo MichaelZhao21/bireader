@@ -1,12 +1,12 @@
-import { boldify } from './lib/boldify';
+import { boldify, deboldify } from './lib/boldify';
 import polyfill from './lib/polyfill';
 import ui from './lib/ui';
 import { getStorage } from './lib/storage';
 
 function toggleBold(data) {
-    console.log(data);
+    console.log(data.activate);
     if (!data.activate) {
-        window.location.reload();
+        deboldify();
     } else {
         boldifyText();
     }
@@ -21,7 +21,7 @@ export const getGlobalStyles = ({ fontWeight, opacity }) => `
 
 async function boldifyText() {
     const storage = await getStorage();
-    boldify(document.body, storage);
+    boldify(storage);
 
     const s = document.createElement('style');
     s.id = 'bi-style';
