@@ -1,7 +1,7 @@
 import polyfill from './lib/polyfill';
 
 const ON = 'Turn BiReader On';
-const OFF = 'Turn BiReader Off';
+const OFF = 'BiReader Settings';
 let tabId = 0;
 
 async function handleClick(tab) {

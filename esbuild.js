@@ -7,7 +7,7 @@ const WEB_ACCESSIBLE_RESOURCES = ['assets/water.css', 'icons/32.png'];
 const generateManifest = (isFirefox) => ({
     manifest_version: isFirefox ? 2 : 3,
     name: 'BiReader',
-    version: '1.1',
+    version: '2.0',
 
     description:
         'Based off of the principles of Bionic Reader to improve speed and depth of reading web text!',
