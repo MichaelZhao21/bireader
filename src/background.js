@@ -1,5 +1,4 @@
 import polyfill from './lib/polyfill';
-import { patchStorage } from './lib/storage';
 
 const ON = 'Turn BiReader On';
 const OFF = 'Turn BiReader Off';

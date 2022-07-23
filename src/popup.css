@@ -11,8 +11,13 @@
 
 html,
 body {
-    width: 100%;
     background-color: var(--background);
+    margin: 0;
+}
+
+html, body {
+    width: 400px;
+    height: 700px;
 }
 
 div, p, span, button, h1, h2 {
@@ -22,10 +27,16 @@ div, p, span, button, h1, h2 {
 h1 {
     color: var(--text);
     font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 0;
 }
 
 p, span {
     color: var(--text-dark);
+}
+
+p {
+    margin: 0.25rem 0;
 }
 
 button {
@@ -63,10 +74,11 @@ input {
 #popup-content {
     display: flex;
     flex-direction: column;
-    width: 300px;
-    height: 500px;
     overflow-x: hidden;
-    padding-top: 1rem;
+    padding: 1rem;
+    margin-top: 1rem;
+    width: calc(100% - 2rem);
+    height: calc(100% - 2rem);
 }
 
 #off-button {
