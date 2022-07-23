@@ -25,6 +25,4 @@ To test on Chrome, run `yarn dev:chromium`; to test on Firefox, run `yarn dev:ff
 This is currently a **_very rough version_** of the extension, and I would love for feedback (just make an Issue or email me at michaelzhao314@gmail.com). Here are some things I plan on implementing in the future:
 
 - Create a consolidated Firefox/Chrome version when Firefox DECIDES TO UPDATE TO MANIFEST VERSION 3
-- Increase readability for harder-to-read fonts
-- Increase contrast for text on darker backgrounds (bold doesn't stand out as well)
 - And more (based on suggestions)!

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="popup.css" />
+</head>
+
+<body>
+    <div id="popup-content">
+        <div class="center">
+            <button id="off-button">
+                <img src="icons/96.png" />
+                <span>Turn Off</span>
+            </button>
+        </div>
+        <h1>Fixation</h1>
+        <p>Percent of word that is bolded</p>
+        <input type="range" id="fixation" min="0" max="1" step="0.1" value="0.5" />
+        <h1>Saccade</h1>
+        <p>Number of words to skip between bolded words</p>
+        <input type="range" id="saccade" min="0" max="5" step="1" value="0" />
+        <h1>Opacity</h1>
+        <p>Opacity of bolded text</p>
+        <input type="range" id="opacity" min="0" max="1" step="0.1" value="1" />
+        <h1>Font Weight</h1>
+        <p>Thickness of bolded text (might not work)</p>
+        <input type="range" id="fontWeight" min="100" max="1000" step="100" value="700" />
+    </div>
+    <script src="popup.js"></script>
+</body>
+
+</html>

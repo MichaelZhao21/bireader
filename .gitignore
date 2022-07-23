@@ -2,3 +2,4 @@ web-ext-artifacts
 .idea
 yarn-error.log
 node_modules
+extension

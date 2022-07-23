@@ -1,0 +1,91 @@
+/* ################## GENERAL STYLES ################## */
+
+:root {
+    --text: #bfc8cc;
+    --text-dark: #85939a;
+    --text-darker: #687277;
+    --background: #212426;
+    --background-light: #31373a;
+    --background-lighter: #687277;
+}
+
+html,
+body {
+    background-color: var(--background);
+    margin: 0;
+}
+
+html, body {
+    width: 400px;
+    height: 700px;
+}
+
+div, p, span, button, h1, h2 {
+    font-family: 'Roboto';
+}
+
+h1 {
+    color: var(--text);
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 0;
+}
+
+p, span {
+    color: var(--text-dark);
+}
+
+p {
+    margin: 0.25rem 0;
+}
+
+button {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: var(--background-light);
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    font-size: 1rem;
+    text-align: center;
+    transition: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+button:hover {
+    background-color: var(--background-lighter);
+}
+
+img {
+    margin: auto;
+}
+
+input {
+    display: block;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+}
+
+/* ################## TAG SPECIFIC STYLES ################## */
+
+#popup-content {
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    padding: 1rem;
+    margin-top: 1rem;
+    width: calc(100% - 2rem);
+    height: calc(100% - 2rem);
+}
+
+#off-button {
+    width: 150px;
+    height: 150px;
+}
+
+#off-button span {
+    margin: auto;
+}
