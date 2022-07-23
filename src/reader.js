@@ -1,36 +1,33 @@
 import { boldify, deboldify } from './lib/boldify';
 import polyfill from './lib/polyfill';
-import ui from './lib/ui';
-import { getStorage } from './lib/storage';
+import { patchStorage, getStorage } from './lib/storage';
+import { getBiStyle } from './lib/util';
 
-function toggleBold(data) {
-    console.log(data.activate);
-    if (!data.activate) {
+async function toggleBold(data) {
+    if (data.update) {
+        await patchStorage({ [data.field]: Number(data.value) });
+        deboldify();
+        boldify(await getStorage());
+        document.getElementById('bi-style').innerText = getBiStyle(await getStorage());
+    }
+    else if (!data.activate) {
         deboldify();
     } else {
-        boldifyText();
+        runBoldify();
     }
 }
 
-export const getGlobalStyles = ({ fontWeight, opacity }) => `
-.bi-bold b {
-    font-weight: ${fontWeight} !important;
-    opacity: ${opacity === 1 ? 'inherit' : opacity} !important;
-}
-`;
-
-async function boldifyText() {
+async function runBoldify() {
     const storage = await getStorage();
     boldify(storage);
 
     const s = document.createElement('style');
     s.id = 'bi-style';
-    s.innerText = getGlobalStyles(storage);
+    s.innerText = getBiStyle(storage);
     document.head.appendChild(s);
-
-    await ui();
 }
 
 polyfill(() => {
+    chrome.runtime.sendMessage(null, { reload: true });
     chrome.runtime.onMessage.addListener(toggleBold);
 });

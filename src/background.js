@@ -1,21 +1,41 @@
 import polyfill from './lib/polyfill';
+import { patchStorage } from './lib/storage';
+
+const ON = 'Turn BiReader On';
+const OFF = 'Turn BiReader Off';
+let tabId = 0;
 
 async function handleClick(tab) {
-    const ON = 'Turn BiReader On';
-    const OFF = 'Turn BiReader Off';
-    chrome.action.getTitle({ tabId: tab.id }, (title) => {
+    // Extract tab id
+    tabId = tab.id;
+
+    // Set the popup
+    chrome.action.setPopup({ popup: 'popup.html' });
+
+    // Change the text and color on click
+    chrome.action.getTitle({ tabId }, (title) => {
         if (title === ON) {
-            chrome.action.setTitle({ tabId: tab.id, title: OFF });
-            chrome.action.setIcon({ tabId: tab.id, path: 'icons/32-alt.png' });
-            chrome.tabs.sendMessage(tab.id, { activate: true });
-        } else {
-            chrome.action.setTitle({ tabId: tab.id, title: ON });
-            chrome.action.setIcon({ tabId: tab.id, path: 'icons/32.png' });
-            chrome.tabs.sendMessage(tab.id, { activate: false });
+            chrome.action.setTitle({ tabId, title: OFF });
+            chrome.action.setIcon({ tabId, path: 'icons/32-alt.png' });
+            chrome.tabs.sendMessage(tabId, { activate: true });
         }
     });
 }
 
+async function handleMessage(message) {
+    if (message.reload) {
+        chrome.action.setPopup({ popup: '' });
+    } else if (message.off) {
+        chrome.action.setTitle({ tabId, title: ON });
+        chrome.action.setIcon({ tabId, path: 'icons/32.png' });
+        chrome.tabs.sendMessage(tabId, { activate: false });
+        chrome.action.setPopup({ popup: '' });
+    } else if (message.adjust) {
+        chrome.tabs.sendMessage(tabId, { update: true, field: message.field, value: message.value });
+    }
+}
+
 polyfill(() => {
     chrome.action.onClicked.addListener(handleClick);
+    chrome.runtime.onMessage.addListener(handleMessage);
 });

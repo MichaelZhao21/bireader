@@ -15,7 +15,6 @@
     "concurrently": "^7.2.2",
     "esbuild": "^0.14.49",
     "fs-extra": "^10.1.0",
-    "node-fetch": "2",
     "web-ext": "^7.0.0"
   },
   "dependencies": {

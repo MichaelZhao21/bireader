@@ -1,6 +1,5 @@
 const esbuild = require('esbuild');
 const fs = require('fs-extra');
-const fetch = require('node-fetch');
 
 const WEB_ACCESSIBLE_RESOURCES = ['assets/water.css', 'icons/32.png'];
 
@@ -44,7 +43,7 @@ const generateManifest = (isFirefox) => ({
               },
           ],
 
-    browser_specific_settings: {
+    browser_specific_settings: isFirefox && {
         gecko: {
             id: 'bireader@michaelzhao.xyz',
         },
@@ -75,9 +74,13 @@ esbuild.buildSync({
     outfile: 'extension/reader.js',
     define,
 });
+esbuild.buildSync({
+    entryPoints: ['src/popup.js'],
+    bundle: true,
+    outfile: 'extension/popup.js',
+    define,
+})
 
 fs.copySync('icons', 'extension/icons');
-
-fetch('https://cdn.jsdelivr.net/npm/water.css@2/out/water.min.css')
-    .then((data) => data.text())
-    .then((text) => fs.writeFileSync('extension/water.min.css', text));
+fs.copyFileSync('src/popup.html', 'extension/popup.html');
+fs.copyFileSync('src/popup.css', 'extension/popup.css');
