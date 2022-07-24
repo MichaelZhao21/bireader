@@ -29,4 +29,5 @@ Click on the browser action button to turn BiReader on. When the extension is ac
 This is currently a **_very rough version_** of the extension, and I would love for feedback (just make an Issue or email me at michaelzhao314@gmail.com). Here are some things I plan on implementing in the future:
 
 - Create a consolidated Firefox/Chrome version when Firefox DECIDES TO UPDATE TO MANIFEST VERSION 3
+- Speed up deboldify operation (takes long time on pages with a ton of content)
 - And more (based on suggestions)!

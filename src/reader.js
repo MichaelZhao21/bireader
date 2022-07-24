@@ -5,7 +5,6 @@ import { getBiStyle } from './lib/util';
 
 async function toggleBold(data) {
     createLoading();
-    console.log(data);
 
     // Set timeout because loading screen needs a few ms to show up
     setTimeout(async () => {
@@ -20,7 +19,7 @@ async function toggleBold(data) {
         }
 
         stopLoading();
-    }, 50);
+    }, 100);
 }
 
 async function runBoldify() {
@@ -53,6 +52,5 @@ function stopLoading() {
 }
 
 polyfill(() => {
-    console.log('hi reader');
     chrome.runtime.onMessage.addListener(toggleBold);
 });
