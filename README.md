@@ -1,4 +1,4 @@
-![Icon](extension/icons/96.png)
+![Icon](icons/96.png)
 
 # BiReader **·** [Firefox Addon](https://addons.mozilla.org/en-US/firefox/addon/bireader/) **·** [Chrome Extension](https://chrome.google.com/webstore/detail/bireader/mkndieaclikppobgjihfijainfmjcbhd)
 
@@ -19,6 +19,10 @@ To promote open source development, I have included the [WTFPL License](http://w
 First, run `yarn install` to install the dependencies.
 
 To test on Chrome, run `yarn dev:chromium`; to test on Firefox, run `yarn dev:ff`. To build for the extension store, run `yarn package:chromium` or `yarn package:ff`.
+
+## Using the Extension
+
+Click on the browser action button to turn BiReader on. When the extension is active, you may click on the extension for more settings and a button to turn off the extension.
 
 ## Future Plans
 
