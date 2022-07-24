@@ -1,0 +1,46 @@
+#bireader-loading-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    width: 100%;
+    min-height: 100%;
+    background-color: #000000bb;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+#bireader-loading-heading {
+    max-width: max-content;
+    margin-bottom: 2rem;
+    text-decoration: none;
+    border: none;
+    font-weight: 700 !important;
+    color: #ffffff;
+}
+
+#bireader-loading {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(255, 255, 255, .3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: bireader-spin 1s ease-in-out infinite;
+    -webkit-animation: bireader-spin 1s ease-in-out infinite;
+}
+
+@keyframes bireader-spin {
+    to {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@-webkit-keyframes bireader-spin {
+    to {
+        -webkit-transform: rotate(360deg);
+    }
+}

@@ -8,9 +8,6 @@ async function handleClick(tab) {
     // Extract tab id
     tabId = tab.id;
 
-    // Set the popup
-    chrome.action.setPopup({ popup: 'popup.html' });
-
     // Change the text and color on click
     chrome.action.getTitle({ tabId }, (title) => {
         if (title === ON) {
@@ -22,13 +19,15 @@ async function handleClick(tab) {
 }
 
 async function handleMessage(message) {
-    if (message.reload) {
-        chrome.action.setPopup({ popup: '' });
+    console.log(message);
+    const tabList = await chrome.tabs.query({ active: true, currentWindow: true });
+    const tab = tabList[0];
+    if (message.popupOpen) {
+        handleClick(tab);
     } else if (message.off) {
         chrome.action.setTitle({ tabId, title: ON });
         chrome.action.setIcon({ tabId, path: 'icons/32.png' });
         chrome.tabs.sendMessage(tabId, { activate: false });
-        chrome.action.setPopup({ popup: '' });
     } else if (message.adjust) {
         chrome.tabs.sendMessage(tabId, { update: true, field: message.field, value: message.value });
     }

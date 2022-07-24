@@ -20,6 +20,7 @@ const generateManifest = (isFirefox) => ({
     [isFirefox ? 'browser_action' : 'action']: {
         default_icon: 'icons/32.png',
         default_title: 'Turn BiReader On',
+        default_popup: 'popup.html',
     },
 
     background: {
@@ -30,6 +31,7 @@ const generateManifest = (isFirefox) => ({
         {
             matches: ['<all_urls>'],
             js: ['reader.js'],
+            css: ['loading.css'],
         },
     ],
 
@@ -79,8 +81,9 @@ esbuild.buildSync({
     bundle: true,
     outfile: 'extension/popup.js',
     define,
-})
+});
 
 fs.copySync('icons', 'extension/icons');
 fs.copyFileSync('src/popup.html', 'extension/popup.html');
 fs.copyFileSync('src/popup.css', 'extension/popup.css');
+fs.copyFileSync('src/loading.css', 'extension/loading.css');

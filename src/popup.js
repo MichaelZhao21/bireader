@@ -1,6 +1,9 @@
 import { getStorage } from './lib/storage';
 
 document.body.onload = async () => {
+    // When the popup loads, run the boldify script
+    chrome.runtime.sendMessage(null, { popupOpen: true });
+
     // Get stored values
     const data = await getStorage();
     document.getElementById('fixation').value = data.fixation;
