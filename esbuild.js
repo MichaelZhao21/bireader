@@ -47,7 +47,7 @@ const generateManifest = (isFirefox) => ({
 
     browser_specific_settings: isFirefox && {
         gecko: {
-            id: 'bireader@michaelzhao.xyz',
+            id: '{c0b92f90-09f0-4407-83c9-08613231fc8e}',
         },
     },
 
